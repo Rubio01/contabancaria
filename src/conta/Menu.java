@@ -6,7 +6,6 @@ import conta.model.ContaPoupanca;
 import java.io.IOException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
-
 import conta.controller.ContaController;
 import conta.model.Conta;
 import conta.util.Cores;
@@ -19,9 +18,9 @@ public class Menu {
 
 		Scanner scanner = new Scanner(System.in);
 
-		int opcao, numero, agencia, tipo, aniversario;
+		int opcao, numero, agencia, tipo, aniversario, numeroDestino;
 		String titular;
-		float saldo, limite;
+		float saldo, limite, valor;
 
 		System.out.println("\nCriar Contas\n");
 		ContaCorrente cc1 = new ContaCorrente(contas.gerarNumero(), 123, 1, "João da Silva", 1000f, 100.0f);
@@ -54,28 +53,30 @@ public class Menu {
 			System.out.println("                                                     ");
 			System.out.println("*****************************************************");
 			System.out.println("Entre com a opção desejada:                          ");
-			System.out.println("                                                     " + Cores.TEXT_RESET);
+			System.out.println("                                                     ");
+			System.out.printf(Cores.TEXT_YELLOW_BRIGHT);
 
 			try {
 				opcao = scanner.nextInt();
 			} catch (InputMismatchException e) {
-				System.out.println("\nDigite Valores Inteiros!");
+				System.out.println(Cores.TEXT_RED_BOLD_BRIGHT+"\nDigite Valores Inteiros!"+Cores.TEXT_RESET);
 				scanner.nextInt();
 				opcao = 0;
 
 			}
 
 			if (opcao == 9) {
-				System.out.println(Cores.TEXT_YELLOW_BRIGHT + "\nGeneration Bank - O seu Futuro começa aqui!");
+				System.out.println(Cores.TEXT_YELLOW_BOLD_BRIGHT+ "\nGeneration Bank - O seu Futuro começa aqui!"+Cores.TEXT_RESET);
 				sobre();
 				scanner.close();
 				System.exit(0);
 			}
+
 			switch (opcao) {
 			case 1:
-				System.out.println(Cores.TEXT_YELLOW_BRIGHT + "Criar Conta\n\n");
+				System.out.println(Cores.TEXT_YELLOW_BOLD_BRIGHT + "Criar Conta\n" + Cores.TEXT_RESET);
 
-				System.out.println("Digite o número da Agência: ");
+				System.out.println(Cores.TEXT_YELLOW_BRIGHT + "Digite o número da Agência: ");
 				agencia = scanner.nextInt();
 
 				System.out.println("Digite o nome do titular: ");
@@ -107,23 +108,24 @@ public class Menu {
 				keyPress();
 				break;
 			case 2:
-				System.out.println(Cores.TEXT_YELLOW_BRIGHT + "Listar todas as Contas\n\n");
+				System.out.println(Cores.TEXT_YELLOW_BOLD_BRIGHT + "\nListar todas as Contas");
 				contas.listarTodas();
 				keyPress();
 				break;
 			case 3:
-				System.out.println(Cores.TEXT_YELLOW_BRIGHT + "Consultar dados da Conta - por número\n\n");
+				System.out.println(
+						Cores.TEXT_YELLOW_BOLD_BRIGHT + "\nConsultar dados da Conta - por número\n" + Cores.TEXT_RESET);
 
-				System.out.println("Digite o número da conta: ");
+				System.out.println(Cores.TEXT_YELLOW_BRIGHT + "Digite o número da conta: ");
 				numero = scanner.nextInt();
 				contas.procurarPorNumero(numero);
 
 				keyPress();
 				break;
 			case 4:
-				System.out.println(Cores.TEXT_YELLOW_BRIGHT + "Atualizar dados da Conta\n\n");
+				System.out.println(Cores.TEXT_YELLOW_BOLD_BRIGHT + "\nAtualizar dados da Conta\n" + Cores.TEXT_RESET);
 
-				System.out.println("Digite o número da conta: ");
+				System.out.println(Cores.TEXT_YELLOW_BRIGHT + "Digite o número da conta: ");
 				numero = scanner.nextInt();
 
 				var buscaConta = contas.buscarNaCollection(numero);
@@ -161,28 +163,65 @@ public class Menu {
 				keyPress();
 				break;
 			case 5:
-				System.out.println(Cores.TEXT_YELLOW_BRIGHT + "Apagar a Conta\n\n");
+				System.out.println(Cores.TEXT_YELLOW_BOLD_BRIGHT + "\nApagar Conta\n" + Cores.TEXT_RESET);
 
-				System.out.println("Digite o número da conta: ");
+				System.out.println(Cores.TEXT_YELLOW_BRIGHT + "Digite o número da conta: ");
 				numero = scanner.nextInt();
 				contas.deletar(numero);
 				keyPress();
 				break;
 			case 6:
 
-				System.out.println(Cores.TEXT_YELLOW_BRIGHT + "Saque\n\n");
+				System.out.println(Cores.TEXT_YELLOW_BOLD_BRIGHT + "\nSaque\n" + Cores.TEXT_RESET);
+
+				System.out.println(Cores.TEXT_YELLOW_BRIGHT + "Digite o número da conta: ");
+				numero = scanner.nextInt();
+
+				do {
+					System.out.println("Digite o valor de saque: ");
+					valor = scanner.nextFloat();
+
+				} while (valor <= 0);
+				contas.sacar(numero, valor);
+
 				keyPress();
 				break;
 			case 7:
-				System.out.println(Cores.TEXT_YELLOW_BRIGHT + "Depósito\n\n");
+				System.out.println(Cores.TEXT_YELLOW_BOLD_BRIGHT + "\nDepósito\n" + Cores.TEXT_RESET);
+
+				System.out.println(Cores.TEXT_YELLOW_BRIGHT + "Digite o número da conta: ");
+				numero = scanner.nextInt();
+
+				do {
+					System.out.println("Digite o valor de depósito: ");
+					valor = scanner.nextFloat();
+
+				} while (valor <= 0);
+
+				contas.depositar(numero, valor);
+
 				keyPress();
 				break;
 			case 8:
-				System.out.println(Cores.TEXT_YELLOW_BRIGHT + "Transferência entre Contas\n\n");
+				System.out.println(Cores.TEXT_YELLOW_BOLD_BRIGHT + "\nTransferência entre Contas\n" + Cores.TEXT_RESET);
+
+				System.out.println(Cores.TEXT_YELLOW_BRIGHT + "Digite o Numero da Conta de Origem: ");
+				numero = scanner.nextInt();
+
+				System.out.println("Digite o Numero da Conta de Destino: ");
+				numeroDestino = scanner.nextInt();
+
+				do {
+					System.out.println("Digite o Valor da Transferência (R$): ");
+					valor = scanner.nextFloat();
+				} while (valor <= 0);
+
+				contas.transferir(numero, numeroDestino, valor);
+
 				keyPress();
 				break;
 			default:
-				System.out.println(Cores.TEXT_YELLOW_BRIGHT + "\nOpção Inválida!\n" + Cores.TEXT_RESET);
+				System.out.println(Cores.TEXT_RED_BOLD_BRIGHT + "\nOpção Inválida!" + Cores.TEXT_RESET);
 				keyPress();
 			}
 		}
@@ -190,7 +229,7 @@ public class Menu {
 
 	public static void keyPress() {
 		try {
-			System.out.println(Cores.TEXT_RESET + "\n\nPressione Enter para continuar...");
+			System.out.println("\n\nPressione Enter para continuar...");
 			System.in.read();
 		} catch (IOException e) {
 			System.out.println("Você pressionou uma tecla diferente de enter!");
@@ -198,11 +237,11 @@ public class Menu {
 	}
 
 	public static void sobre() {
-		System.out.println("\n*********************************************************");
+		System.out.println(Cores.TEXT_YELLOW_BRIGHT+"\n*********************************************************");
 		System.out.println("Projeto Desenvolvido por: Rubio Dainton");
 		System.out.println("Rubio Dainton - rubiodaiton@gmail.com");
-		System.out.println("github.com/conteudoGeneration");
-		System.out.println("*********************************************************");
+		System.out.println("https://github.com/Rubio01/contabancaria");
+		System.out.println("*********************************************************"+Cores.TEXT_RESET);
 	}
 
 }
